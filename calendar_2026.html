@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>カレンダー 2026年 7・8月</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --border: #e0ddd6;
+    --border-light: #ede9e1;
+    --text-primary: #1a1917;
+    --text-secondary: #6b6860;
+    --text-muted: #a8a49c;
+    --sun: #c0392b;
+    --sat: #1a5fa8;
+    --today-bg: #1a1917;
+    --today-text: #f5f3ee;
+    --accent-1: #7F77DD;
+    --accent-2: #1D9E75;
+    --accent-3: #D85A30;
+    --accent-4: #378ADD;
+    --accent-5: #D4537E;
+    --accent-6: #BA7517;
+    --accent-7: #0F6E56;
+    --accent-8: #993C1D;
+    --accent-9: #185FA5;
+    --accent-10: #639922;
+    --radius: 8px;
+    --header-h: 60px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+  }
+
+  header .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  header .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  header .spacer { flex: 1; }
+
+  header .month-nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  header .month-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  header .month-btn:hover,
+  header .month-btn.active {
+    background: var(--text-primary);
+    color: var(--bg);
+    border-color: var(--text-primary);
+  }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  .month-section {
+    margin-bottom: 40px;
+  }
+
+  .month-heading {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-left: 2px;
+  }
+
+  .day-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    margin-bottom: 4px;
+    transition: border-color 0.15s;
+    overflow: hidden;
+  }
+
+  .day-row:hover {
+    border-color: var(--border);
+  }
+
+  .day-label {
+    flex-shrink: 0;
+    width: 58px;
+    padding: 10px 0 10px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    border-right: 1px solid var(--border-light);
+  }
+
+  .day-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .day-wd {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 400;
+    padding-left: 4px;
+  }
+
+  .day-label.sun .day-num { color: var(--sun); }
+  .day-label.sat .day-num { color: var(--sat); }
+  .day-label.sun .day-wd { color: var(--sun); opacity: 0.7; }
+  .day-label.sat .day-wd { color: var(--sat); opacity: 0.7; }
+
+  .day-label.today .day-num {
+    background: var(--today-bg);
+    color: var(--today-text);
+  }
+
+  .events-area {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 8px;
+    gap: 1px;
+  }
+
+  .event-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+  }
+
+  .event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .event-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 16px;
+    color: var(--text-primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    outline: none;
+    line-height: 1.5;
+    transition: background 0.1s;
+  }
+
+  .event-input::placeholder {
+    color: var(--text-muted);
+    font-size: 16px;
+  }
+
+  .event-input:focus {
+    background: var(--bg);
+  }
+
+  /* scrollspy */
+  .section-anchor { scroll-margin-top: calc(var(--header-h) + 16px); }
+
+  /* footer hint */
+  .hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 24px;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">2026</span>
+  <span class="title">カレンダー</span>
+  <div class="spacer"></div>
+  <div class="month-nav">
+    <button class="month-btn active" onclick="scrollToMonth('july')">7月</button>
+    <button class="month-btn" onclick="scrollToMonth('august')">8月</button>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<script>
+const MONTHS = [
+  { id: 'july',   year: 2026, month: 7, label: '7月 — July 2026' },
+  { id: 'august', year: 2026, month: 8, label: '8月 — August 2026' }
+];
+const WD = ['日','月','火','水','木','金','土'];
+const MAX = 10;
+const COLORS = [
+  '#7F77DD','#1D9E75','#D85A30','#378ADD','#D4537E',
+  '#BA7517','#0F6E56','#993C1D','#185FA5','#639922'
+];
+
+function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+function firstDay(y, m)    { return new Date(y, m - 1, 1).getDay(); }
+function isToday(y, m, d)  {
+  const t = new Date();
+  return t.getFullYear() === y && t.getMonth() + 1 === m && t.getDate() === d;
+}
+function sk(y, m, d, n) { return `cal26-${y}-${m}-${d}-${n}`; }
+function save(y, m, d, n, v) {
+  try { v ? localStorage.setItem(sk(y,m,d,n), v) : localStorage.removeItem(sk(y,m,d,n)); } catch(e) {}
+}
+function load(y, m, d, n) {
+  try { return localStorage.getItem(sk(y,m,d,n)) || ''; } catch(e) { return ''; }
+}
+
+function buildRow(year, month, day) {
+  const dow = (firstDay(year, month) + day - 1) % 7;
+  const today = isToday(year, month, day);
+
+  const row = document.createElement('div');
+  row.className = 'day-row';
+
+  // label
+  const lbl = document.createElement('div');
+  lbl.className = 'day-label' + (dow === 0 ? ' sun' : dow === 6 ? ' sat' : '') + (today ? ' today' : '');
+
+  const numEl = document.createElement('div');
+  numEl.className = 'day-num';
+  numEl.textContent = String(day).padStart(2, ' ');
+
+  const wdEl = document.createElement('div');
+  wdEl.className = 'day-wd';
+  wdEl.textContent = WD[dow];
+
+  lbl.appendChild(numEl);
+  lbl.appendChild(wdEl);
+  row.appendChild(lbl);
+
+  // events
+  const area = document.createElement('div');
+  area.className = 'events-area';
+  row.appendChild(area);
+
+  const inputs = [];
+
+  function visibleCount() {
+    let last = -1;
+    for (let n = 0; n < MAX; n++) { if (inputs[n] && inputs[n].value) last = n; }
+    return Math.min(last + 2, MAX);
+  }
+
+  function render() {
+    area.innerHTML = '';
+    const count = visibleCount();
+    for (let n = 0; n < count; n++) {
+      const r = document.createElement('div');
+      r.className = 'event-row';
+      const dot = document.createElement('div');
+      dot.className = 'event-dot';
+      dot.style.background = COLORS[n];
+      r.appendChild(dot);
+      r.appendChild(inputs[n]);
+      area.appendChild(r);
+    }
+  }
+
+  for (let n = 0; n < MAX; n++) {
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'event-input';
+    inp.placeholder = `予定 ${n + 1}`;
+    inp.maxLength = 50;
+    inp.value = load(year, month, day, n);
+    inp.addEventListener('input', () => {
+      if (inp.value.length > 50) inp.value = inp.value.slice(0, 50);
+      save(year, month, day, n, inp.value);
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { inp.blur(); }
+    });
+    inp.addEventListener('blur', () => render());
+    inputs.push(inp);
+  }
+
+  render();
+  return row;
+}
+
+function buildMonth({ id, year, month, label }) {
+  const sec = document.createElement('div');
+  sec.className = 'month-section section-anchor';
+  sec.id = id;
+
+  const heading = document.createElement('div');
+  heading.className = 'month-heading';
+  heading.textContent = label;
+  sec.appendChild(heading);
+
+  for (let d = 1; d <= daysInMonth(year, month); d++) {
+    sec.appendChild(buildRow(year, month, d));
+  }
+  return sec;
+}
+
+const main = document.getElementById('main');
+MONTHS.forEach(m => main.appendChild(buildMonth(m)));
+
+const hint = document.createElement('p');
+hint.className = 'hint';
+hint.textContent = '予定は自動保存されます（最大10件 / 1日）';
+main.appendChild(hint);
+
+function scrollToMonth(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// 今日が含まれる月を自動スクロール
+window.addEventListener('load', () => {
+  const t = new Date();
+  if (t.getFullYear() === 2026 && t.getMonth() + 1 === 7) {
+    document.getElementById('july')?.scrollIntoView();
+  } else if (t.getFullYear() === 2026 && t.getMonth() + 1 === 8) {
+    document.getElementById('august')?.scrollIntoView();
+  }
+});
+</script>
+</body>
+</html>
